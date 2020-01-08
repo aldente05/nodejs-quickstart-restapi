@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  inteldakim:
+    container_name: inteldakim_services
+    build: .
+    depends_on:
+      - postgresql
+    networks:
+      - backend
+    links:
+      - postgresql
+    environment:
+      WAIT_HOSTS: postgresql_inteldakim:7654
+      WAIT_HOSTS_TIMEOUT: 120
+      WAIT_SLEEP_INTERVAL: 60
+    ports:
+      - "3400:3400"
+  postgresql:
+    container_name: postgresql_inteldakim
+    image: bitnami/postgresql:latest
+    volumes:
+      - ./postgresql_data:/bitnami/postgresql
+    environment:
+      POSTGRESQL_DATABASE: inteldakim
+      POSTGRESQL_PASSWORD: bFz6IqLAm239e1cnBc8C100
+      POSTGRESQL_USERNAME: inteldakim
+      POSTGRESQL_PORT_NUMBER: 7654
+    ports:
+      - "7654:7654"
+    networks:
+      - postgresql
+networks:
+  postgresql:
+    external:
+      name: website_bridge
+  backend:
+    external:
+      name: website_bridge
